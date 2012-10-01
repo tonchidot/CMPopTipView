@@ -237,6 +237,10 @@
 }
 
 - (void)presentPointingAtView:(UIView *)targetView inView:(UIView *)containerView animated:(BOOL)animated {
+    [self presentPointingAtView:targetView inView:containerView animated:animated direction:PointDirectionDefault];
+}
+
+- (void)presentPointingAtView:(UIView *)targetView inView:(UIView *)containerView animated:(BOOL)animated direction:(PointDirection)direction {
 	if (!self.targetObject) {
 		self.targetObject = targetView;
 	}
@@ -307,27 +311,37 @@
     
 	CGFloat pointerY;	// Y coordinate of pointer target (within containerView)
 	
-	if (targetRelativeOrigin.y+targetView.bounds.size.height < containerRelativeOrigin.y) {
-		pointerY = 0.0;
-		pointDirection = PointDirectionUp;
-	}
-	else if (targetRelativeOrigin.y > containerRelativeOrigin.y+containerView.bounds.size.height) {
-		pointerY = containerView.bounds.size.height;
-		pointDirection = PointDirectionDown;
-	}
-	else {
-		CGPoint targetOriginInContainer = [targetView convertPoint:CGPointMake(0.0, 0.0) toView:containerView];
-		CGFloat sizeBelow = containerView.bounds.size.height - targetOriginInContainer.y;
-		if (sizeBelow > targetOriginInContainer.y) {
-			pointerY = targetOriginInContainer.y + targetView.bounds.size.height;
-			pointDirection = PointDirectionUp;
-		}
-		else {
-			pointerY = targetOriginInContainer.y;
-			pointDirection = PointDirectionDown;
-		}
-	}
-	
+    if (direction == PointDirectionDefault) {
+        if (targetRelativeOrigin.y+targetView.bounds.size.height < containerRelativeOrigin.y) {
+            pointerY = 0.0;
+            pointDirection = PointDirectionUp;
+        }
+        else if (targetRelativeOrigin.y > containerRelativeOrigin.y+containerView.bounds.size.height) {
+            pointerY = containerView.bounds.size.height;
+            pointDirection = PointDirectionDown;
+        }
+        else {
+            CGPoint targetOriginInContainer = [targetView convertPoint:CGPointMake(0.0, 0.0) toView:containerView];
+            CGFloat sizeBelow = containerView.bounds.size.height - targetOriginInContainer.y;
+            if (sizeBelow > targetOriginInContainer.y) {
+                pointerY = targetOriginInContainer.y + targetView.bounds.size.height;
+                pointDirection = PointDirectionUp;
+            }
+            else {
+                pointerY = targetOriginInContainer.y;
+                pointDirection = PointDirectionDown;
+            }
+        }
+    } else if (direction == PointDirectionUp) {
+        CGPoint targetOriginInContainer = [targetView convertPoint:CGPointMake(0.0, 0.0) toView:containerView];
+        pointerY = targetOriginInContainer.y + targetView.bounds.size.height;
+        pointDirection = direction;
+    } else if (direction == PointDirectionDown) {
+        CGPoint targetOriginInContainer = [targetView convertPoint:CGPointMake(0.0, 0.0) toView:containerView];
+        pointerY = targetOriginInContainer.y;
+        pointDirection = direction;
+    }
+
 	CGFloat W = containerView.bounds.size.width;
 	
 	CGPoint p = [targetView.superview convertPoint:targetView.center toView:containerView];

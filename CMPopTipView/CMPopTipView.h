@@ -90,7 +90,8 @@
 
 typedef enum {
 	PointDirectionUp = 0,
-	PointDirectionDown
+	PointDirectionDown,
+	PointDirectionDefault
 } PointDirection;
 
 typedef enum {
@@ -144,6 +145,7 @@ typedef enum {
 - (id)initWithCustomView:(UIView *)aView;
 
 - (void)presentPointingAtView:(UIView *)targetView inView:(UIView *)containerView animated:(BOOL)animated;
+- (void)presentPointingAtView:(UIView *)targetView inView:(UIView *)containerView animated:(BOOL)animated direction:(PointDirection)direction;
 - (void)presentPointingAtBarButtonItem:(UIBarButtonItem *)barButtonItem animated:(BOOL)animated;
 - (void)dismissAnimated:(BOOL)animated;
 - (void)autoDismissAnimated:(BOOL)animated atTimeInterval:(NSTimeInterval)timeInvertal;
